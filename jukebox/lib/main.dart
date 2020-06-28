@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:jukebox/track-player/track-player.dart';
 import 'shared/constants.dart';
 import 'shared/loading.dart';
 import 'models/track-json.dart';
@@ -41,8 +42,9 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
+final _formKey = GlobalKey<FormState>();
 bool loading = false;
-Future<String> state = "" as Future<String>;
+String state = "";
 
 Future<String> addToJukeBoxAPI(JsonTrack track) async{
 
@@ -85,9 +87,10 @@ Future<String> getTrack(String search) async {
       JsonTrack track = new JsonTrack.fromJson(response.data[0]);
       
      // return addToJukeBoxAPI(track);
-      return null;
+     loading = false;
+      return "null";
     } else {
-
+      loading = false;
       throw Exception('Failed to save user');
     }
   }
@@ -118,6 +121,8 @@ String _addTrack;
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             new Flexible(
+              child: Form(
+                key: _formKey,
                  child:   Row(
                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[ 
@@ -126,7 +131,7 @@ String _addTrack;
                        child:TextFormField(
                          
                          decoration: textFormDecoration.copyWith(
-                                hintText: 'Input name'),
+                                hintText: 'Song Name'),
                             validator: (val) =>
                                 val.isEmpty ? 'Please enter a song name' : null,
                             onChanged: (val) => setState(() {
@@ -139,8 +144,14 @@ String _addTrack;
                         // and add to own api
                         // loading screen
                         onPressed:()async{
-                          loading = true;
-                          state = getTrack(_addTrack);
+                            if(_formKey.currentState.validate()){ 
+                              loading = true;
+                              dynamic response = await getTrack(_addTrack);
+                              print(response.toString());
+                              setState(() {
+                                      state = response;
+                                    });
+                            };
                           },
                         
           //    child: FutureBuilder(
@@ -151,11 +162,11 @@ String _addTrack;
                     ),
                     ]
                     ),
-                    
+              ),      
             ),
-         //   Text(track.title),
+            Text(state),
               FloatingActionButton(
-                onPressed: _incrementCounter,
+                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => (TrackPlayer()))),
                 tooltip: 'Increment',
                 child: Icon(Icons.add),
               ),

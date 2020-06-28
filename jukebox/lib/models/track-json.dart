@@ -14,10 +14,10 @@ factory JsonTrack.fromJson(Map<String, dynamic> json){
   return JsonTrack(
     track_id: json['id'],
     title: json['title'],
-    artist: json['artist']['name'],
-    picture_big: json['artist']['picture_big'],
+    artist: json['artist'],
+    picture_big: json['picture_big'],
     played: false,
-    web_user: json['web_user'],
+    web_user: 1,
   );
  
 }
