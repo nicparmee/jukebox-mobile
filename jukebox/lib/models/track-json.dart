@@ -4,10 +4,11 @@ class JsonTrack{
   final String title;
   final String artist;
   final String picture_big;
-  final bool played;
+  bool played;
   final int web_user;
+  bool playing;
 
-  JsonTrack({ this.track_id, this.title, this.artist, this.picture_big, this.played, this.web_user});
+  JsonTrack({ this.track_id, this.title, this.artist, this.picture_big, this.played, this.web_user, this.playing});
 
 factory JsonTrack.fromJson(Map<String, dynamic> json){
 
@@ -18,9 +19,18 @@ factory JsonTrack.fromJson(Map<String, dynamic> json){
     picture_big: json['picture_big'],
     played: false,
     web_user: 1,
+    playing: false,
   );
  
+
 }
+ void changePlayed(bool played) {
+    this.played = played;
+  }
+
+  void changePlaying(bool playing) {
+    this.playing = playing;
+  }
 
 
 }
