@@ -29,6 +29,7 @@ class _TrackPlayerState extends State<TrackPlayer> {
     searchTracks();
   }
 
+  // Logic for playing the tracks
   void selectPlayingTrack() {
     if (firstBuild) {
       index = rng.nextInt(tracks.length);
@@ -55,14 +56,15 @@ class _TrackPlayerState extends State<TrackPlayer> {
     }
   }
 
-  List<JsonTrack> parseUsers(String responseBody) {
+  List<JsonTrack> parseTracks(String responseBody) {
     print(responseBody);
     final parsed = json.decode(responseBody);
-    List<JsonTrack> parsed2 = new List<JsonTrack>.from(
+    List<JsonTrack> tracksList = new List<JsonTrack>.from(
         parsed.map((json) => JsonTrack.fromJson(json)).toList());
-    return parsed2;
+    return tracksList;
   }
 
+  // Fetch tracks from own server
   void searchTracks() async {
     final http.Response resp = await http.get(
       'http://jukebox-api.azurewebsites.net/tracks/',
@@ -71,16 +73,14 @@ class _TrackPlayerState extends State<TrackPlayer> {
       },
     );
     if (resp.statusCode == 200) {
-      tracks = parseUsers(resp.body);
+      // Prep list and select first track to play
+      tracks = parseTracks(resp.body);
       selectPlayingTrack();
       setState(() {
         loading = false;
       });
-
-      //   showTrackList();
     } else {
-      // If the server did not return a 201 CREATED response,
-      // then throw an exception.
+     
       throw Exception('Failed to save user');
     }
   }
